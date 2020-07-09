@@ -37,10 +37,10 @@
 
 .tc-news__panel-wrapper {
     position: relative;
-    padding: 15px;
+    /* padding: 15px; */
     width: 100%;
     height: 100%;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     box-sizing: border-box;
 }
 
@@ -60,10 +60,24 @@
 }
 
 .tc-news__feed-head {
+    padding: 15px 15px 10px 15px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     margin-bottom: 15px;
     display: flex;
     align-items: flex-start;
-    width: calc(100% - 40px);
+    border-radius: 4px;
+    background-color: #f7f7f7;
+}
+
+.tc-news__content {
+    padding: 15px;
+    padding-top: 52px;
+    height: 100%;
+    overflow-y: scroll;
+    box-sizing: border-box;
 }
 
 .tc-news__title {
@@ -75,7 +89,7 @@
 
 .tc-news__social-bar {
     padding-top: 4px;
-    padding-right: 10px;
+    padding-right: 50px;
     display: flex;
 }
 
@@ -114,9 +128,7 @@
 }
 
 .tc-news__image {
-    object-fit: cover;
     width: 100%;
-    height: 200px;
 }
 
 .tc-news__post-title {
@@ -213,7 +225,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* width: fit-content; */
     width: 100%;
     height: 50px;
 }
@@ -334,6 +345,12 @@
 .t-feed__post-preloader:nth-child(9) .t-feed__post-preloader__img, .t-feed__post-preloader:nth-child(9) .t-feed__post-preloader__title, .t-feed__post-preloader:nth-child(9) .t-feed__post-preloader__text {
     -webkit-animation-delay: 2.3s;
     animation-delay: 2.3s;
+}
+
+@media screen and (max-width: 1200px) {
+    .tc-news__post-text {
+        max-height: 34px;
+    }
 }
 
 @media screen and (max-width: 640px) {

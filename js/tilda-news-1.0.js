@@ -5,6 +5,10 @@ var tNewsWidget = {
     recid: 209304902,
     feeduid: '814331624834',
     projectid: '2484524',
+    EN: {
+        recid: 209872257,
+        feeduid: '5d971e17b674f464032195'
+    },
     slice: 1,
     postsPerSlice: 2,
     total: null,
@@ -29,7 +33,7 @@ function t_news_init() {
     var news = JSON.parse(localStorage.getItem('tNews'));
     if (news && news['isEverLoaded']) {
         tNewsWidget.loadingTimer = setTimeout(function () {
-            t_news_loadPosts(tNewsWidget.recid, mockOpts, 1, true);
+            t_news_loadPosts(tNewsWidget.recid, mockOpts, 1);
         }, 3000);
     }
 
@@ -65,7 +69,7 @@ function t_news_addEvents() {
 
         tNewsWidget.slice++;
         var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, tNewsWidget.slice);
-        t_news_loadPosts(tNewsWidget.recid, mockOpts, tNewsWidget.slice, true);
+        t_news_loadPosts(tNewsWidget.recid, mockOpts, tNewsWidget.slice);
     });
 }
 
@@ -80,6 +84,9 @@ function t_news_loadPosts(recid, opts, slice) {
     wrapper.find('.js-feed-preloader').removeClass(
         't-feed__post-preloader__container_hidden'
     );
+
+    var lang = t_news_returnLang();
+    recid = lang === 'RU' ? tNewsWidget.recid : tNewsWidget['EN'].recid;
 
     var dataObj = t_news_createDataObjForRequest(
         recid,
@@ -216,7 +223,7 @@ function t_news_drawWidgetButton() {
 
 function t_news_drawPanel() {
     var str = '';
-    var title = 'Our News';
+    var title = t_news_getDictionary('title');
     str += '<div class="tc-news__panel">';
     str += '<div class="tc-news__panel-wrapper">';
     str += '<div class="tc-news__close-panel">';
@@ -343,7 +350,7 @@ function t_news_drawButtons() {
 function t_news_drawShowMoreBtn() {
     var str = '';
     str += '<div class="t-news__button t-news__button_hidden t-news__button_showmore t-btn" >';
-    str += 'Show More';
+    str += t_news_getDictionary('showmore');
     str += '</div>';
     return str;
 }
@@ -406,9 +413,9 @@ function t_news_onWidgetClick() {
     if (tNewsWidget.loadingTimer) {
         clearTimeout(tNewsWidget.loadingTimer);
         tNewsWidget.loadingTimer = null;
-        t_news_loadPosts(tNewsWidget.recid, mockOpts, 1, true);
+        t_news_loadPosts(tNewsWidget.recid, mockOpts, 1);
     } else if (!news || !news['isEverLoaded']) {
-        t_news_loadPosts(tNewsWidget.recid, mockOpts, 1, true);
+        t_news_loadPosts(tNewsWidget.recid, mockOpts, 1);
     }
 
     var wrapper = $('#tc-news');
@@ -487,9 +494,13 @@ function t_news_setReadTime() {
 }
 
 function t_news_getMockOpts(size, slice) {
+    var lang = t_news_returnLang();
+    var feeduid = lang === 'RU' ? tNewsWidget.feeduid : tNewsWidget['EN'].feeduid;
+    var recid = lang === 'RU' ? tNewsWidget.recid : tNewsWidget['EN'].recid;
+
     var opts = {
-        feeduid: tNewsWidget.feeduid,
-        recid: tNewsWidget.recid,
+        feeduid: feeduid,
+        recid: recid,
         c: Date.now(),
         size: size,
         slice: slice,
@@ -566,6 +577,18 @@ function t_news_getDictionary(msg) {
         ZH: '什么都没找到',
     };
 
+    dict['title'] = {
+        EN: 'Our News',
+        RU: 'Наши новости',
+        FR: 'Nos actualités',
+        DE: 'Unsere Nachrichten',
+        ES: 'Nuestras noticias',
+        PT: 'Nasze aktualności',
+        UK: 'Наші новини',
+        JA: '私たちのニュース',
+        ZH: '我们的新闻',
+    };
+
     dict['all'] = {
         EN: 'All',
         RU: 'Все',
@@ -576,6 +599,18 @@ function t_news_getDictionary(msg) {
         UK: 'Всі',
         JA: 'すべて',
         ZH: '所有',
+    };
+
+    dict['showmore'] = {
+        EN: 'Show More',
+        RU: 'Показать еще',
+        FR: 'Montre plus',
+        DE: 'Zeig mehr',
+        ES: 'Mostrar más',
+        PT: 'Pokaż więcej',
+        UK: 'Показати ще',
+        JA: 'もっと見せる',
+        ZH: '显示更多',
     };
 
     dict['seealso'] = {

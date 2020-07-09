@@ -60,12 +60,11 @@
 .tc-news__feed-head {
     margin-bottom: 15px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     width: calc(100% - 40px);
 }
 
 .tc-news__title {
-    margin-right: 20px;
     flex-grow: 1;
     font-weight: 300;
     font-size: 20px;

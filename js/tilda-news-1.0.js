@@ -7,7 +7,7 @@ var tNewsWidget = {
     projectid: '2484524',
     EN: {
         recid: 209872257,
-        feeduid: '5d971e17b674f464032195'
+        feeduid: '442610812815'
     },
     slice: 1,
     postsPerSlice: 2,
@@ -74,7 +74,6 @@ function t_news_addEvents() {
 }
 
 function t_news_loadPosts(recid, opts, slice) {
-    console.log('load posts');
     var wrapper = $('#tc-news');
     var isFirstSlice = !slice || parseInt(slice) === 1;
     // Start with proper amount of preloading posts
@@ -144,7 +143,7 @@ function t_news_loadPosts(recid, opts, slice) {
             );
 
             var obj = JSON.parse(data);
-            console.log(obj);
+            console.log('data: ', obj);
             if (obj.total) {
                 tNewsWidget.total = +obj.total;
             }
@@ -271,7 +270,7 @@ function t_news_drawPosts(posts, slice) {
         var isImage = post.mediatype && post.mediadata.length;
         var isText = text.length;
 
-        str += '<div class="tc-news__post">';
+        str += '<div class="tc-news__post" data-post-id="' + post.uid + '">';
         str += '<div class="tc-news__post-title t-name t-name_md">' + title + '</div>';
         if (isImage) {
             str += '<div class="tc-news__post-image">';
@@ -286,6 +285,8 @@ function t_news_drawPosts(posts, slice) {
 
         feed.append(str);
     })
+
+    t_news_drawExpandButton();
 
     if (window.lazy == 'y') {
         t_lazyload_update();
@@ -306,6 +307,31 @@ function t_news_drawShowMoreBtn() {
     str += t_news_getDictionary('showmore');
     str += '</div>';
     return str;
+}
+
+function t_news_drawExpandButton() {
+    $('.tc-news__post-text').each(function () {
+        var isButtonExist = $(this).closest('.tc-news__post').find('.tc-news__post-expand').length;
+
+        if (!isButtonExist) {
+            var safePadding = 10;
+            var scrollHeight = $(this)[0].scrollHeight;
+            var height = $(this)[0].offsetHeight + safePadding;
+
+            if (scrollHeight > height) {
+                // var id = $(this).closest('.tc-news__post').attr('data-post-id');
+                var button = $('<div class="tc-news__post-expand t-uptitle t-uptitle_xs">' + t_news_getDictionary('expand') + '</div>');
+                button.insertAfter($(this));
+
+                button.on('click', function () {
+                    var post = $(this).closest('.tc-news__post');
+                    var text = post.find('.tc-news__post-text')
+                    text.addClass('tc-news__post-text_expanded');
+                    $(this).hide();
+                })
+            }
+        }
+    })
 }
 
 function t_news_drawUnreadCounter(count) {
@@ -621,6 +647,18 @@ function t_news_getDictionary(msg) {
         UK: 'Показати ще',
         JA: 'もっと見せる',
         ZH: '显示更多',
+    };
+
+    dict['expand'] = {
+        EN: 'Expand',
+        RU: 'Развернуть',
+        FR: 'Développer',
+        DE: 'Erweitern',
+        ES: 'Expandir',
+        PT: 'Rozszerzać',
+        UK: 'Розгорнути',
+        JA: '拡大する',
+        ZH: '扩大',
     };
 
     dict['seealso'] = {

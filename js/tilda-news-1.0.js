@@ -74,6 +74,7 @@ function t_news_addEvents() {
 }
 
 function t_news_loadPosts(recid, opts, slice) {
+    console.log('load posts');
     var wrapper = $('#tc-news');
     var isFirstSlice = !slice || parseInt(slice) === 1;
     // Start with proper amount of preloading posts
@@ -156,7 +157,7 @@ function t_news_loadPosts(recid, opts, slice) {
             news['isEverLoaded'] = true;
             localStorage.setItem('tNews', JSON.stringify(news));
 
-            t_news_drawPosts(obj.posts);
+            t_news_drawPosts(obj.posts, slice);
             t_news_displayButtons(obj.nextslice);
             t_news_checkUnreadPosts(obj.posts);
         },
@@ -250,6 +251,74 @@ function t_news_drawPanel() {
     return str;
 }
 
+function t_news_drawPosts(posts, slice) {
+    var wrapper = $('#tc-news');
+    var feed = wrapper.find('.tc-news__feed');
+
+    if (!posts.length && +slice === 1) {
+        var str = '';
+        str += '<div class="tc-news__error">';
+        str += '<div class="t-descr t-descr_xs">' + t_news_getDictionary('emptypartmsg') + '</div>';
+        str += '</>';
+
+        feed.append(str);
+    }
+
+    posts.forEach(function (post, i) {
+        var str = '';
+        var title = post.title;
+        var text = post.text.length ? post.text : post.descr;
+        var isImage = post.mediatype && post.mediadata.length;
+        var isText = text.length;
+
+        str += '<div class="tc-news__post">';
+        str += '<div class="tc-news__post-title t-name t-name_md">' + title + '</div>';
+        if (isImage) {
+            str += '<div class="tc-news__post-image">';
+            str += '<img src="' + t_news_getLazyUrl(post.mediadata) + '" class="tc-news__image t-img" data-original="' + post.mediadata + '">';
+            str += '</div>';
+        }
+        if (isText) {
+            str += '<div class="tc-news__post-text t-descr t-descr_xxs">' + text + '</div>';
+        }
+        str += '<div class="tc-news__post-date t-uptitle t-uptitle_xs">' + t_news_formatDate(post.date) + '</div>';
+        str += '</div>';
+
+        feed.append(str);
+    })
+
+    if (window.lazy == 'y') {
+        t_lazyload_update();
+    }
+}
+
+function t_news_drawButtons() {
+    var str = '';
+    str += '<div class="tc-news__button-wrapper tc-news__button-wrapper_hidden">';
+    str += t_news_drawShowMoreBtn();
+    str += '</div>';
+    return str;
+}
+
+function t_news_drawShowMoreBtn() {
+    var str = '';
+    str += '<div class="t-news__button t-news__button_hidden t-news__button_showmore t-btn" >';
+    str += t_news_getDictionary('showmore');
+    str += '</div>';
+    return str;
+}
+
+function t_news_drawUnreadCounter(count) {
+    var wrapper = $('#tc-news');
+    var counter = wrapper.find('.tc-news__widget-counter');
+    if (count > 0) {
+        counter.addClass('tc-news__widget-counter_visible');
+        counter.text(count);
+    } else {
+        counter.removeClass('tc-news__widget-counter_visible');
+    }
+}
+
 function t_news_drawSocialLinks() {
     var socialLinks = {
         fb: 'https://www.facebook.com/tildapublishing',
@@ -305,65 +374,6 @@ function t_news_drawSocialLinks() {
     str += '</div>';
 
     return str;
-}
-
-function t_news_drawPosts(posts) {
-    var wrapper = $('#tc-news');
-    var feed = wrapper.find('.tc-news__feed');
-
-    posts.forEach(function (post, i) {
-        var str = '';
-        var title = post.title;
-        var text = post.text.length ? post.text : post.descr;
-        var isImage = post.mediatype && post.mediadata.length;
-        var isText = text.length;
-
-        str += '<div class="tc-news__post">';
-        str += '<div class="tc-news__post-title t-name t-name_md">' + title + '</div>';
-        if (isImage) {
-            str += '<div class="tc-news__post-image">';
-            str += '<img src="' + t_news_getLazyUrl(post.mediadata) + '" class="tc-news__image t-img" data-original="' + post.mediadata + '">';
-            str += '</div>';
-        }
-        if (isText) {
-            str += '<div class="tc-news__post-text t-descr t-descr_xxs">' + text + '</div>';
-        }
-        str += '<div class="tc-news__post-date t-uptitle t-uptitle_xs">' + t_news_formatDate(post.date) + '</div>';
-        str += '</div>';
-
-        feed.append(str);
-    })
-
-    if (window.lazy == 'y') {
-        t_lazyload_update();
-    }
-}
-
-function t_news_drawButtons() {
-    var str = '';
-    str += '<div class="tc-news__button-wrapper tc-news__button-wrapper_hidden">';
-    str += t_news_drawShowMoreBtn();
-    str += '</div>';
-    return str;
-}
-
-function t_news_drawShowMoreBtn() {
-    var str = '';
-    str += '<div class="t-news__button t-news__button_hidden t-news__button_showmore t-btn" >';
-    str += t_news_getDictionary('showmore');
-    str += '</div>';
-    return str;
-}
-
-function t_news_drawUnreadCounter(count) {
-    var wrapper = $('#tc-news');
-    var counter = wrapper.find('.tc-news__widget-counter');
-    if (count > 0) {
-        counter.addClass('tc-news__widget-counter_visible');
-        counter.text(count);
-    } else {
-        counter.removeClass('tc-news__widget-counter_visible');
-    }
 }
 
 function t_news_drawPreloaders(amount, total) {

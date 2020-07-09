@@ -85,6 +85,11 @@
     opacity: 1;
 }
 
+.tc-news__error {
+    padding: 15px;
+    background-color: #ffffff;
+}
+
 /* Posts */
 
 .tc-news__post {

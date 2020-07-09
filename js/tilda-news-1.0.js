@@ -229,6 +229,7 @@ function t_news_drawPanel() {
     str += '</div>';
     str += '<div class="tc-news__feed-head">';
     str += '<div class="tc-news__title t-title t-title_sm">' + title + '</div>';
+    str += '<div class="tc-news__social-bar">' + t_news_drawSocialLinks() + '</div>';
     str += '</div>';
     str += '<div class="tc-news__feed"></div>';
 
@@ -237,6 +238,63 @@ function t_news_drawPanel() {
     str += '</div>';
     {/* <!-- preloader els end --> */ }
     str += '</div>';
+    str += '</div>';
+
+    return str;
+}
+
+function t_news_drawSocialLinks() {
+    var socialLinks = {
+        fb: 'https://www.facebook.com/tildapublishing',
+        twitter: 'https://twitter.com/TildaPublishing',
+        vk: 'https://vk.com/tildapublishing',
+        youtube: 'https://www.youtube.com/tildapublishing',
+        instagram: 'https://www.instagram.com/tildapublishing/',
+        telegram: 'https://telegram.me/tildanews'
+    }
+    var size = "25px";
+    var str = '';
+
+    //Facebook
+    str += '<div class="tc-news__social-item">';
+    str += '<a href="' + socialLinks.fb + '" target="_blank" rel="noopener noreferrer">';
+    str += '<svg class="tc-news__social-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="25px" height="25px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve"><desc>Facebook</desc><path d="M21.1 7.8C22.5 6.5 24.5 6 26.4 6h6v6.3h-3.9c-.8-.1-1.6.6-1.8 1.4v4.2h5.7c-.1 2-.4 4.1-.7 6.1h-5v18h-7.4V24h-3.6v-6h3.6v-5.9c.1-1.7.7-3.3 1.8-4.3z"></path></svg>';
+    str += '</a>';
+    str += '</div>';
+
+    //Twitter
+    str += '<div class="tc-news__social-item">';
+    str += '<a href="' + socialLinks.twitter + '" target="_blank" rel="noopener noreferrer">';
+    str += '<svg class="tc-news__social-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="25px" height="25px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve"><desc>Twitter</desc><path d="M41.8 12.7c-1.3.6-2.8 1-4.2 1.1 1.5-1 2.6-2.3 3.2-4-1.5.8-2.9 1.5-4.7 1.8-1.3-1.5-3.2-2.3-5.3-2.3-4 0-7.3 3.2-7.3 7.3 0 .6 0 1.1.2 1.6-6-.3-11.3-3.2-15.1-7.6-.6 1.1-1 2.3-1 3.7 0 2.6 1.3 4.7 3.2 6-1.1 0-2.3-.3-3.2-1v.2c0 3.6 2.4 6.5 5.8 7.1-.6.2-1.3.3-1.9.3-.5 0-1 0-1.3-.2 1 2.9 3.6 5 6.8 5-2.4 1.9-5.7 3.1-9.1 3.1-.6 0-1.1 0-1.8-.2 3.2 2.1 7 3.2 11.2 3.2 13.4 0 20.7-11 20.7-20.7v-1c1.7-.7 2.8-2 3.8-3.4z"></path></svg>';
+    str += '</a>';
+    str += '</div>';
+
+    //Vk
+    str += '<div class="tc-news__social-item">';
+    str += '<a href="' + socialLinks.vk + '" target="_blank" rel="noopener noreferrer">';
+    str += '<svg class="tc-news__social-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="25px" height="25px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve"><desc>VK</desc><path d="M41.2 22.2c.6-.8 1.1-1.5 1.5-2 2.7-3.5 3.8-5.8 3.5-6.8l-.2-.2c-.1-.1-.3-.3-.7-.4-.4-.1-.9-.1-1.5-.1h-7.2c-.2 0-.3 0-.3.1 0 0-.1 0-.1.1v.1c-.1 0-.2.1-.3.2-.1.1-.2.2-.2.4-.7 1.9-1.5 3.6-2.5 5.2-.6 1-1.1 1.8-1.6 2.5s-.9 1.2-1.2 1.5c-.3.3-.6.6-.9.8-.2.3-.4.4-.5.4-.1 0-.3-.1-.4-.1-.2-.1-.4-.3-.5-.6-.1-.2-.2-.5-.3-.9 0-.4-.1-.7-.1-.9v-1.1-1-1.9c0-.7 0-1.2.1-1.6v-1.3c0-.4 0-.8-.1-1.1-.1-.3-.1-.5-.2-.7-.1-.2-.3-.4-.5-.6-.2-.1-.5-.2-.8-.3-.8-.2-1.9-.3-3.1-.3-2.9 0-4.7.2-5.5.6-.3.2-.6.4-.9.7-.3.3-.3.5-.1.6.9.1 1.6.5 2 1l.1.3c.1.2.2.6.3 1.1.1.5.2 1.1.2 1.7.1 1.1.1 2.1 0 2.9-.1.8-.1 1.4-.2 1.9-.1.4-.2.8-.3 1.1-.1.3-.2.4-.3.5 0 .1-.1.1-.1.1-.1-.1-.4-.1-.6-.1-.2 0-.5-.1-.8-.3-.3-.2-.6-.5-1-.9-.3-.4-.7-.9-1.1-1.6-.4-.7-.8-1.5-1.3-2.4l-.4-.7c-.2-.4-.5-1.1-.9-1.9-.4-.8-.8-1.6-1.1-2.4-.1-.3-.3-.6-.6-.7l-.1-.1c-.1-.1-.2-.1-.4-.2s-.3-.1-.5-.2H3.2c-.6 0-1.1.1-1.3.4l-.1.1c0 .1-.1.2-.1.4s0 .4.1.6c.9 2.2 1.9 4.3 3 6.3s2 3.6 2.8 4.9c.8 1.2 1.6 2.4 2.4 3.5.8 1.1 1.4 1.8 1.7 2.1.3.3.5.5.6.7l.6.6c.4.4.9.8 1.6 1.3.7.5 1.5 1 2.4 1.5.9.5 1.9.9 3 1.2 1.2.3 2.3.4 3.4.4H26c.5 0 .9-.2 1.2-.5l.1-.1c.1-.1.1-.2.2-.4s.1-.4.1-.6c0-.7 0-1.3.1-1.8s.2-.9.4-1.2c.1-.3.3-.5.5-.7.2-.2.3-.3.4-.3.1 0 .1-.1.2-.1.4-.1.8 0 1.3.4s1 .8 1.4 1.3c.4.5 1 1.1 1.6 1.8.6.7 1.2 1.2 1.6 1.5l.5.3c.3.2.7.4 1.2.5.5.2.9.2 1.3.1l5.9-.1c.6 0 1-.1 1.4-.3.3-.2.5-.4.6-.6.1-.2.1-.5 0-.8-.1-.3-.1-.5-.2-.6-.1-.1-.1-.2-.2-.3-.8-1.4-2.2-3.1-4.4-5.1-1-.9-1.6-1.6-1.9-1.9-.5-.6-.6-1.2-.3-1.9.3-.5 1-1.5 2.2-3z"></path></svg>';
+    str += '</a>';
+    str += '</div>';
+
+    //YouTube
+    str += '<div class="tc-news__social-item">';
+    str += '<a href="' + socialLinks.youtube + '" target="_blank" rel="noopener noreferrer">';
+    str += '<svg class="tc-news__social-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="25px" height="25px" viewBox="0 0 48 48" enable-background="new -455 257 48 48" xml:space="preserve"><desc>Youtube</desc><path d="M43.9 15.3c-.4-3.1-2.2-5-5.3-5.3-3.6-.3-11.4-.5-15-.5-7.3 0-10.6.2-14.1.5-3.3.3-4.8 1.8-5.4 4.9-.4 2.1-.6 4.1-.6 8.9 0 4.3.2 6.9.5 9.2.4 3.1 2.5 4.8 5.7 5.1 3.6.3 10.9.5 14.4.5s11.2-.2 14.7-.6c3.1-.4 4.6-2 5.1-5.1 0 0 .5-3.3.5-9.1 0-3.3-.2-6.4-.5-8.5zM19.7 29.8V18l11.2 5.8-11.2 6z"></path></svg>';
+    str += '</a>';
+    str += '</div>';
+
+    //Instagram
+    str += '<div class="tc-news__social-item">';
+    str += '<a href="' + socialLinks.instagram + '" target="_blank" rel="noopener noreferrer">';
+    str += '<svg class="tc-news__social-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="25px" height="25px" viewBox="0 0 25 25" enable-background="new 0 0 25 25" xml:space="preserve"><desc>Instagram</desc><path d="M16.396,3.312H8.604c-2.921,0-5.292,2.371-5.292,5.273v7.846c0,2.886,2.371,5.256,5.292,5.256h7.791c2.922,0,5.292-2.37,5.292-5.274V8.586C21.688,5.683,19.317,3.312,16.396,3.312L16.396,3.312z M7.722,12.5c0-2.64,2.142-4.778,4.778-4.778c2.636,0,4.777,2.138,4.777,4.778s-2.142,4.777-4.777,4.777C9.864,17.277,7.722,15.14,7.722,12.5zM17.756,8.182c-0.615,0-1.104-0.487-1.104-1.102s0.488-1.103,1.104-1.103c0.614,0,1.102,0.488,1.102,1.103S18.37,8.182,17.756,8.182L17.756,8.182z"></path><path d="M12.5,9.376c-1.731,0-3.124,1.398-3.124,3.124c0,1.725,1.393,3.124,3.124,3.124c1.732,0,3.124-1.399,3.124-3.124C15.624,10.775,14.211,9.376,12.5,9.376L12.5,9.376z"></path></svg>';
+    str += '</a>';
+    str += '</div>';
+
+    //Telegram
+    str += '<div class="tc-news__social-item">';
+    str += '<a href="' + socialLinks.telegram + '" target="_blank" rel="noopener noreferrer">';
+    str += '<svg class="tc-news__social-icon" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25px" height="25px" viewBox="0 0 60 60" xml:space="preserve"><desc>Telegram</desc><path d="M52.5,9L6.1,26.9c-0.9,0.4-0.9,1.8,0,2.3l11.9,4.9l4.4,14.1c0.3,0.8,1.2,1,1.8,0.5l6.8-6.4l12.9,8.7c0.7,0.4,1.6,0,1.7-0.7L54,10.3C54.2,9.5,53.3,8.7,52.5,9z M24.5,36.7L23.8,44l-3.6-11.2l25.3-16.8L24.5,36.7z"></path></svg>';
+    str += '</a>';
     str += '</div>';
 
     return str;
@@ -254,14 +312,14 @@ function t_news_drawPosts(posts) {
         var isText = text.length;
 
         str += '<div class="tc-news__post">';
-        str += '<div class="tc-news__post-title t-name t-name_lg">' + title + '</div>';
+        str += '<div class="tc-news__post-title t-name t-name_md">' + title + '</div>';
         if (isImage) {
             str += '<div class="tc-news__post-image">';
             str += '<img src="' + t_news_getLazyUrl(post.mediadata) + '" class="tc-news__image t-img" data-original="' + post.mediadata + '">';
             str += '</div>';
         }
         if (isText) {
-            str += '<div class="tc-news__post-text t-descr t-descr_xs">' + text + '</div>';
+            str += '<div class="tc-news__post-text t-descr t-descr_xxs">' + text + '</div>';
         }
         str += '<div class="tc-news__post-date t-uptitle t-uptitle_xs">' + t_news_formatDate(post.date) + '</div>';
         str += '</div>';

@@ -366,7 +366,7 @@ function t_news_drawPosts(posts, slice) {
             str += '<div class="tc-news__post-text t-descr t-descr_xxs">' + text + '</div>';
         }
         if (isUrl) {
-            str += '<a href="' + post.url + '" class="t-news__button t-news__button_external t-uptitle t-uptitle_xs" target="_blank" rel="noopener noreferrer">' + t_news_getDictionary('external');
+            str += '<a href="' + post.url + '" class="tc-news__button tc-news__button_external t-uptitle t-uptitle_xs" target="_blank" rel="noopener noreferrer">' + t_news_getDictionary('external');
             // str += '<svg class="tc-news__post-link-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,1.70710678 L7.85355339,8.85355339 C7.65829124,9.04881554 7.34170876,9.04881554 7.14644661,8.85355339 C6.95118446,8.65829124 6.95118446,8.34170876 7.14644661,8.14644661 L14.2928932,1 L8.5,1 C8.22385763,1 8,0.776142375 8,0.5 C8,0.223857625 8.22385763,0 8.5,0 L15.5,0 C15.7761424,0 16,0.223857625 16,0.5 L16,7.5 C16,7.77614237 15.7761424,8 15.5,8 C15.2238576,8 15,7.77614237 15,7.5 L15,1.70710678 L15,1.70710678 Z M12,9.5 C12,9.22385763 12.2238576,9 12.5,9 C12.7761424,9 13,9.22385763 13,9.5 L13,14.5 C13,15.3281424 12.3281424,16 11.5,16 L1.5,16 C0.671857625,16 0,15.3281424 0,14.5 L0,4.5 C0,3.67185763 0.671857625,3 1.5,3 L6.5,3 C6.77614237,3 7,3.22385763 7,3.5 C7,3.77614237 6.77614237,4 6.5,4 L1.5,4 C1.22414237,4 1,4.22414237 1,4.5 L1,14.5 C1,14.7758576 1.22414237,15 1.5,15 L11.5,15 C11.7758576,15 12,14.7758576 12,14.5 L12,9.5 Z"></path></svg>';
             str += '</a>';
         }

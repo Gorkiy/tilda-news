@@ -145,6 +145,25 @@
     overflow: auto;
 }
 
+.tc-news__post-link-wrapper {
+    margin-bottom: 5px;
+    margin-top: -5px;
+}
+
+.tc-news__post-link {
+    color: #fa8669;
+    letter-spacing: 1px;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.tc-news__post-link-icon {
+    margin-left: 4px;
+    width: 10px;
+    height: 10px;
+    fill: #fa8669;
+}
+
 .tc-news__post-expand {
     margin-top: 8px;
     letter-spacing: 1px;
@@ -350,6 +369,10 @@
 @media screen and (max-width: 1200px) {
     .tc-news__post-text {
         max-height: 34px;
+    }
+    .tc-news__post-text_expanded {
+        max-height: 100%;
+        overflow: auto;
     }
 }
 

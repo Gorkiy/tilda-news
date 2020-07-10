@@ -10,29 +10,31 @@ var tNewsWidget = {
         feeduid: '442610812815'
     },
     slice: 1,
+    nextSlice: null,
     postsPerSlice: 2,
     total: null,
-    loadingTimer: null
+    loadingTimer: null,
+    isLoading: false
 }
 
 function t_news_init() {
     var wrapper = $('#tc-news');
     wrapper.append(t_news_drawWidgetButton());
     wrapper.append(t_news_drawPanel());
-    var panel = wrapper.find('.tc-news__panel-wrapper');
     var content = wrapper.find('.tc-news__content');
     content.append(t_news_drawPreloaders(tNewsWidget.postsPerSlice));
     content.append(t_news_drawButtons());
-    t_news_addEvents();
 
     // Reset state
     tNewsWidget.slice = 1;
     tNewsWidget.total = null;
-    var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, 1);
+    tNewsWidget.nextSlice = null;
+    tNewsWidget.isLoading = false;
 
     // If news panel was exposed before, load posts in 3 sec
     var news = JSON.parse(localStorage.getItem('tNews'));
     if (news && news['isEverLoaded']) {
+        var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, 1);
         tNewsWidget.loadingTimer = setTimeout(function () {
             t_news_loadPosts(tNewsWidget.recid, mockOpts, 1);
         }, 3000);
@@ -41,12 +43,14 @@ function t_news_init() {
     if (window.lazy == 'y') {
         t_lazyload_update();
     }
+    t_news_addEvents();
 }
 
 function t_news_addEvents() {
     var wrapper = $('#tc-news');
     var panel = wrapper.find('.tc-news__panel');
-    var showMoreButton = wrapper.find('.t-news__button_showmore');
+    var content = wrapper.find('.tc-news__content');
+    // var showMoreButton = wrapper.find('.t-news__button_showmore');
 
     wrapper.find('.tc-news__widget').click(function (e) {
         t_news_onWidgetClick();
@@ -62,19 +66,36 @@ function t_news_addEvents() {
         }
     });
 
-    showMoreButton.on('click', function (e) {
-        e.preventDefault();
-        var wrapper = $('#tc-news');
-        var buttonsWrapper = wrapper.find('.tc-news__button-wrapper');
-        buttonsWrapper.addClass('tc-news__button-wrapper_hidden');
+    content.on('scroll', function () {
+        var height = content.height();
+        var scrollTop = content.scrollTop();
+        var scrollHeight = content[0].scrollHeight;
+        var topPadding = 80;
 
-        tNewsWidget.slice++;
-        var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, tNewsWidget.slice);
-        t_news_loadPosts(tNewsWidget.recid, mockOpts, tNewsWidget.slice);
-    });
+        // If user scrolls down to a slightly higher than the content bottom, load posts
+        if (height + scrollTop >= scrollHeight - topPadding) {
+            if (!tNewsWidget.isLoading && tNewsWidget.nextSlice) {
+                tNewsWidget.slice++;
+                var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, tNewsWidget.slice);
+                t_news_loadPosts(tNewsWidget.recid, mockOpts, tNewsWidget.slice);
+            }
+        }
+    })
+
+    // showMoreButton.on('click', function (e) {
+    //     e.preventDefault();
+    //     var wrapper = $('#tc-news');
+    //     var buttonsWrapper = wrapper.find('.tc-news__button-wrapper');
+    //     buttonsWrapper.addClass('tc-news__button-wrapper_hidden');
+
+    //     tNewsWidget.slice++;
+    //     var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, tNewsWidget.slice);
+    //     t_news_loadPosts(tNewsWidget.recid, mockOpts, tNewsWidget.slice);
+    // });
 }
 
 function t_news_loadPosts(recid, opts, slice) {
+    tNewsWidget.isLoading = true;
     var wrapper = $('#tc-news');
     var isFirstSlice = !slice || parseInt(slice) === 1;
     // Start with proper amount of preloading posts
@@ -111,12 +132,14 @@ function t_news_loadPosts(recid, opts, slice) {
         dataType: 'text',
         success: function (data) {
             if (data === '') {
+                tNewsWidget.isLoading = false;
                 return;
             }
 
             try {
                 var obj = JSON.parse(data);
             } catch (e) {
+                tNewsWidget.isLoading = false;
                 wrapper.find('.js-feed-preloader').remove();
                 wrapper.find('.js-feed-container').append(
                     // t_feed_drawErrorBox(opts, data)
@@ -125,10 +148,12 @@ function t_news_loadPosts(recid, opts, slice) {
             }
 
             if (typeof obj !== 'object') {
+                tNewsWidget.isLoading = false;
                 return;
             }
 
             if ('error' in JSON.parse(data)) {
+                tNewsWidget.isLoading = false;
                 setTimeout(function () {
                     wrapper.find('.js-feed-preloader').remove();
                     wrapper.find('.js-feed-container').append(
@@ -157,11 +182,27 @@ function t_news_loadPosts(recid, opts, slice) {
             news['isEverLoaded'] = true;
             localStorage.setItem('tNews', JSON.stringify(news));
 
+            tNewsWidget.nextSlice = obj.nextslice;
+            tNewsWidget.isLoading = false;
             t_news_drawPosts(obj.posts, slice);
-            t_news_displayButtons(obj.nextslice);
             t_news_checkUnreadPosts(obj.posts);
+
+            // If the next slice exists and scrollheight <= content height, load one more slice
+            // We need this to fill the whole height of the content, so oncroll event for lazy load could work properly
+            setTimeout(function () {
+                var scrollHeight = $('.tc-news__content')[0].scrollHeight;
+                var height = $('.tc-news__content')[0].offsetHeight;
+
+                if (+slice === 1 && tNewsWidget.nextSlice && scrollHeight <= height) {
+                    tNewsWidget.slice++;
+                    var mockOpts = t_news_getMockOpts(tNewsWidget.postsPerSlice, tNewsWidget.slice);
+                    t_news_loadPosts(tNewsWidget.recid, mockOpts, tNewsWidget.slice);
+                }
+            }, 1000);
+
         },
         error: function (xhr) {
+            tNewsWidget.isLoading = false;
             var ts_delta = Date.now() - ts;
             if (xhr.status == 0 && ts_delta < 100) {
                 alert(
@@ -173,7 +214,7 @@ function t_news_loadPosts(recid, opts, slice) {
     });
 }
 
-function t_news_getPostData(id) {
+function t_news_updatePostText(id) {
     var wrapper = $('#tc-news');
     var apiUrl = 'https://feeds.tildacdn.com/api/getpost?postuid=' + id;
     var ts = Date.now();
@@ -320,13 +361,21 @@ function t_news_drawPosts(posts, slice) {
         var title = post.title;
         var text = post.text.length ? post.text : post.descr;
         if (!post.text.length) {
-            t_news_getPostData(post.uid);
+            t_news_updatePostText(post.uid);
         }
 
         var isImage = post.mediatype && post.mediadata.length;
         var isText = text.length;
+        var isUrl = post.url.length;
 
         str += '<div class="tc-news__post" data-post-id="' + post.uid + '">';
+        if (isUrl) {
+            str += '<div class="tc-news__post-link-wrapper">';
+            str += '<a href="' + post.url + '" class="tc-news__post-link t-uptitle t-uptitle_xs" target="_blank" rel="noopener noreferrer">' + t_news_getDictionary('external');
+            str += '<svg class="tc-news__post-link-icon" width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,1.70710678 L7.85355339,8.85355339 C7.65829124,9.04881554 7.34170876,9.04881554 7.14644661,8.85355339 C6.95118446,8.65829124 6.95118446,8.34170876 7.14644661,8.14644661 L14.2928932,1 L8.5,1 C8.22385763,1 8,0.776142375 8,0.5 C8,0.223857625 8.22385763,0 8.5,0 L15.5,0 C15.7761424,0 16,0.223857625 16,0.5 L16,7.5 C16,7.77614237 15.7761424,8 15.5,8 C15.2238576,8 15,7.77614237 15,7.5 L15,1.70710678 L15,1.70710678 Z M12,9.5 C12,9.22385763 12.2238576,9 12.5,9 C12.7761424,9 13,9.22385763 13,9.5 L13,14.5 C13,15.3281424 12.3281424,16 11.5,16 L1.5,16 C0.671857625,16 0,15.3281424 0,14.5 L0,4.5 C0,3.67185763 0.671857625,3 1.5,3 L6.5,3 C6.77614237,3 7,3.22385763 7,3.5 C7,3.77614237 6.77614237,4 6.5,4 L1.5,4 C1.22414237,4 1,4.22414237 1,4.5 L1,14.5 C1,14.7758576 1.22414237,15 1.5,15 L11.5,15 C11.7758576,15 12,14.7758576 12,14.5 L12,9.5 Z"></path></svg>';
+            str += '</a>';
+            str += '</div>';
+        }
         str += '<div class="tc-news__post-title t-name t-name_xs">' + title + '</div>';
         if (isImage) {
             str += '<div class="tc-news__post-image">';
@@ -370,7 +419,7 @@ function t_news_drawExpandButtons() {
         var isButtonExist = $(this).closest('.tc-news__post').find('.tc-news__post-expand').length;
 
         if (!isButtonExist) {
-            var safePadding = 10;
+            var safePadding = 20;
             var scrollHeight = $(this)[0].scrollHeight;
             var height = $(this)[0].offsetHeight + safePadding;
 
@@ -485,17 +534,16 @@ function t_news_drawPreloaders(amount, total) {
     wrapper.append(str);
 }
 
-function t_news_displayButtons(nextslice) {
-    var wrapper = $('#tc-news');
-    var buttonsWrapper = wrapper.find('.tc-news__button-wrapper');
-    // var showMoreButton = wrapper.find('.t-news__button_showmore');
+// function t_news_displayButtons(nextslice) {
+//     var wrapper = $('#tc-news');
+//     var buttonsWrapper = wrapper.find('.tc-news__button-wrapper');
 
-    if (!nextslice) {
-        buttonsWrapper.addClass('tc-news__button-wrapper_hidden');
-    } else {
-        buttonsWrapper.removeClass('tc-news__button-wrapper_hidden');
-    }
-}
+//     if (!nextslice) {
+//         buttonsWrapper.addClass('tc-news__button-wrapper_hidden');
+//     } else {
+//         buttonsWrapper.removeClass('tc-news__button-wrapper_hidden');
+//     }
+// }
 
 function t_news_onWidgetClick() {
     var news = JSON.parse(localStorage.getItem('tNews'));
@@ -691,6 +739,18 @@ function t_news_getDictionary(msg) {
         UK: 'Всі',
         JA: 'すべて',
         ZH: '所有',
+    };
+
+    dict['external'] = {
+        EN: 'View the post',
+        RU: 'Перейти к новости',
+        FR: "Voir l'article",
+        DE: 'Beitrag anzeigen',
+        ES: 'Ver publicacion',
+        PT: 'Zobacz post',
+        UK: 'Перейти до новини',
+        JA: '投稿を表示',
+        ZH: '查看帖子',
     };
 
     dict['showmore'] = {

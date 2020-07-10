@@ -183,9 +183,9 @@ function t_news_loadPosts(recid, opts, slice) {
             localStorage.setItem('tNews', JSON.stringify(news));
 
             tNewsWidget.nextSlice = obj.nextslice;
-            tNewsWidget.isLoading = false;
             t_news_drawPosts(obj.posts, slice);
             t_news_checkUnreadPosts(obj.posts);
+            tNewsWidget.isLoading = false;
 
             // If the next slice exists and scrollheight <= content height, load one more slice
             // We need this to fill the whole height of the content, so oncroll event for lazy load could work properly
@@ -366,7 +366,10 @@ function t_news_drawPosts(posts, slice) {
 
         var isImage = post.mediatype && post.mediadata.length;
         var isText = text.length;
-        var isUrl = post.url.length;
+        // We don't want to keep post url provided with each post by default
+        // We show only custom links added by content manager
+        var projectUrl = 'project' + tNewsWidget.projectid + '.tilda.ws';
+        var isUrl = post.url.length && post.url.indexOf(projectUrl) === -1;
 
         str += '<div class="tc-news__post" data-post-id="' + post.uid + '">';
         if (isUrl) {

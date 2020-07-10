@@ -10,37 +10,16 @@
     border-radius: 4px;
     background-color: #f7f7f7;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
-    /* transform: translateX(120%);
-    transition: transform 0.5s ease; */
 }
 
-/* .tc-news__panel::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 40px;
-    border-bottom-right-radius: 4px;
-    border-bottom-left-radius: 4px;
-    background: rgb(247, 247, 247);
-    background: linear-gradient(0deg, rgba(247, 247, 247, 1) 0%, rgba(247, 247, 247, 0.9) 20%, rgba(247, 247, 247, 0.1) 80%, rgba(247, 247, 247, 0) 100%);
-} */
-
-.tc-news__panel_expanded {}
-
 .tc-news__panel_visible {
-    /* transform: translateX(0%);
-    transition: transform 0.35s ease-out; */
     display: block;
 }
 
 .tc-news__panel-wrapper {
     position: relative;
-    /* padding: 15px; */
     width: 100%;
     height: 100%;
-    /* overflow-y: scroll; */
     box-sizing: border-box;
 }
 
@@ -145,25 +124,6 @@
     overflow: auto;
 }
 
-.tc-news__post-link-wrapper {
-    margin-bottom: 5px;
-    margin-top: -5px;
-}
-
-.tc-news__post-link {
-    color: #fa8669;
-    letter-spacing: 1px;
-    font-weight: 400;
-    text-decoration: none;
-}
-
-.tc-news__post-link-icon {
-    margin-left: 4px;
-    width: 10px;
-    height: 10px;
-    fill: #fa8669;
-}
-
 .tc-news__post-expand {
     margin-top: 8px;
     letter-spacing: 1px;
@@ -227,25 +187,22 @@
 
 /* Buttons */
 
-.tc-news__button-wrapper {
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.tc-news__button-wrapper_hidden {
-    display: none;
-}
-
 .t-news__button {
-    background-color: #fa8669;
+    background-color: #000000;
     color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 50px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.t-news__button_external {
+    padding: 0 20px;
+    margin-top: 10px;
+    letter-spacing: 1px;
+    width: fit-content;
+    height: 40px;
 }
 
 /* Preloader */
@@ -384,6 +341,10 @@
         top: 0;
         bottom: 0;
         border-radius: 0;
+    }
+    .t-news__button_external {
+        padding: 0 16px;
+        height: 36px;
     }
 }
 
